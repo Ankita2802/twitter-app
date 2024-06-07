@@ -1,15 +1,23 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:api_withgetx/utills/api_urls.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  get(String endPoint) async {
-    var url = Uri.parse(endPoint);
-    var response = await http.get(url);
-    var data = returnResponse(response);
-    return data;
+  /// For GET request
+  Future<http.Response> getHttp(
+      {required String api, bool token = false}) async {
+    final url = ApiUrls.baseUrl + api;
+    log(url, name: 'getHttp');
+
+    final response = await http
+        .get(Uri.parse(url), headers: {'Content-Type': 'application/json'});
+    log(response.statusCode.toString());
+
+    return response;
   }
 
+  /// For Post Request
   Future<http.Response> postHttp({
     required Map<String, dynamic> data,
     required String api,

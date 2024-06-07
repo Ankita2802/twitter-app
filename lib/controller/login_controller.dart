@@ -23,9 +23,9 @@ class LoginController extends GetxController {
       Map<String, dynamic> data = {"email": _email, "password": _password};
       final response = await repo.login(data);
       log(response.toString(), name: 'response login');
-      if (response == null) {
-        Utils.toastMessage(response['error'].toString());
-      }
+
+      Utils.toastMessage(response['error'].toString());
+
       return true;
     } catch (e) {
       Get.snackbar('Error', e.toString());

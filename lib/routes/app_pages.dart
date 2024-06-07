@@ -23,8 +23,9 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.user,
-      page: () => const UserScreen(),
+      page: () => const UserScreen(
+        id: 0,
+      ),
     ),
-
   ];
 }

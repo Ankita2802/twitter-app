@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:api_withgetx/screens/auth/user/user_screen.dart';
 import 'package:api_withgetx/theme/app_color.dart';
 import 'package:api_withgetx/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -26,14 +27,12 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
-  // late PostProvider provider;
-  // @override
-  // void initState() {
-  //   provider = Provider.of<PostProvider>(context, listen: false);
-  //   log(widget.id.toString(), name: 'post Id');
-  //   log(widget.postId.toString(), name: 'comments Id');
-  //   super.initState();
-  // }
+  @override
+  void initState() {
+    log(widget.id.toString(), name: 'post Id');
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,15 +44,14 @@ class _PostCardState extends State<PostCard> {
           ListTile(
             onTap: () {
               Get.toNamed('/user');
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => UserScreen(
-              //       id: widget.userId,
-              //       userName: widget.userName,
-              //     ),
-              //   ),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UserScreen(
+                    id: widget.userId,
+                  ),
+                ),
+              );
             },
             leading: Container(
               decoration: BoxDecoration(
@@ -66,7 +64,7 @@ class _PostCardState extends State<PostCard> {
               child: CircleAvatar(
                 backgroundColor: Colors.white,
                 child: Text(
-                  widget.name.isNotEmpty ? widget.name : 'N',
+                  widget.userName,
                   style: boldBlack.copyWith(fontSize: 10),
                 ),
               ),

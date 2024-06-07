@@ -1,17 +1,15 @@
-import 'dart:developer';
-
+import 'package:api_withgetx/controller/user_controller.dart';
 import 'package:api_withgetx/models/user_model.dart';
-import 'package:api_withgetx/theme/app_theme.dart';
 import 'package:api_withgetx/utills/app_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class UserScreen extends StatefulWidget {
-  // final int id;
-  // final String userName;
+  final int id;
+
   const UserScreen({
     super.key,
-    // required this.id,
-    // required this.userName,
+    required this.id,
   });
 
   @override
@@ -21,19 +19,13 @@ class UserScreen extends StatefulWidget {
 class _UserScreenState extends State<UserScreen> {
   // late PostProvider provider;
   UserModel? user;
-  bool loading = true;
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   log(widget.id.toString(), name: 'id user');
-  //   log(widget.userName.toString(), name: 'id user');
-  //   provider = Provider.of<PostProvider>(context, listen: false);
-  //   provider.getParticulatUsers(widget.id.toString()).then((value) {
-  //     setState(() {
-  //       loading = false;
-  //     });
-  //   });
-  // }
+
+  UserController userController = Get.put(UserController());
+  @override
+  void initState() {
+    userController.getParticulatUsers(widget.id.toString());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +39,7 @@ class _UserScreenState extends State<UserScreen> {
           cacheWidth: 30,
         ),
         centerTitle: true,
-        leading: Icon(
+        leading: const Icon(
           Icons.person_outline,
           color: Colors.black,
           size: 30,
@@ -63,23 +55,29 @@ class _UserScreenState extends State<UserScreen> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildHeader(user),
-              const SizedBox(height: 16.0),
-              _buildContactInfo(user),
-              const SizedBox(height: 16.0),
-              _buildAddress(user),
-              const SizedBox(height: 16.0),
-              _buildCompanyInfo(user),
-            ],
-          ),
-        ),
-      ),
+      body: Obx(() {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ListView.builder(
+              itemCount: userController.userDetail.length,
+              itemBuilder: (context, index) {
+                return SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildHeader(user),
+                      const SizedBox(height: 16.0),
+                      _buildContactInfo(user),
+                      const SizedBox(height: 16.0),
+                      _buildAddress(user),
+                      const SizedBox(height: 16.0),
+                      _buildCompanyInfo(user),
+                    ],
+                  ),
+                );
+              }),
+        );
+      }),
     );
   }
 }
@@ -96,11 +94,11 @@ Widget _buildHeader(UserModel? user) {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'ankita',
+            user!.name ?? '',
             style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           Text(
-            '@${'ankita'}',
+            '@${user.username}',
             style: const TextStyle(fontSize: 16, color: Colors.grey),
           ),
         ],
@@ -133,7 +131,7 @@ Widget _buildContactInfo(UserModel? user) {
             children: [
               const Icon(Icons.email, color: Colors.blue),
               const SizedBox(width: 8.0),
-              Text(user?.email ?? 'no email'),
+              Text(user!.email ?? 'no email'),
             ],
           ),
           const SizedBox(height: 8.0),
@@ -141,7 +139,7 @@ Widget _buildContactInfo(UserModel? user) {
             children: [
               const Icon(Icons.phone, color: Colors.blue),
               const SizedBox(width: 8.0),
-              Text(user?.phone ?? 'no phone'),
+              Text(user.phone ?? 'no phone'),
             ],
           ),
           const SizedBox(height: 8.0),
@@ -149,7 +147,7 @@ Widget _buildContactInfo(UserModel? user) {
             children: [
               const Icon(Icons.web, color: Colors.blue),
               const SizedBox(width: 8.0),
-              Text(user?.website ?? ' no website'),
+              Text(user.website ?? ' no website'),
             ],
           ),
         ],
@@ -159,7 +157,7 @@ Widget _buildContactInfo(UserModel? user) {
 }
 
 Widget _buildAddress(UserModel? user) {
-  final address = user?.address ?? 'no adress';
+  final address = user!.address;
   return Card(
     borderOnForeground: false,
     elevation: 2.0,
@@ -179,9 +177,9 @@ Widget _buildAddress(UserModel? user) {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8.0),
-          // Text(
-          //     '${address?.street ?? 'no street'}, ${address.suite ?? 'no suite'}'),
-          // Text('${address.city}, ${address.zipcode}'),
+          Text(
+              '${address!.street ?? 'no street'}, ${address.suite ?? 'no suite'}'),
+          Text('${address.city}, ${address.zipcode}'),
         ],
       ),
     ),
@@ -189,7 +187,7 @@ Widget _buildAddress(UserModel? user) {
 }
 
 Widget _buildCompanyInfo(UserModel? user) {
-  // final company = user!.company;
+  final company = user!.company;
   return Card(
     borderOnForeground: false,
     elevation: 2.0,
@@ -209,11 +207,11 @@ Widget _buildCompanyInfo(UserModel? user) {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8.0),
-          // Text(company!.name ?? 'no name'),
-          // const SizedBox(height: 8.0),
-          // Text('Catch Phrase: ${company.catchPhrase}'),
-          // const SizedBox(height: 8.0),
-          // Text('BS: ${company.bs}'),
+          Text(company!.name ?? 'no name'),
+          const SizedBox(height: 8.0),
+          Text('Catch Phrase: ${company.catchPhrase}'),
+          const SizedBox(height: 8.0),
+          Text('BS: ${company.bs}'),
         ],
       ),
     ),
