@@ -1,4 +1,6 @@
 import 'dart:developer';
+import 'package:api_withgetx/controller/comment_controller.dart';
+import 'package:api_withgetx/controller/home_cotroller.dart';
 import 'package:api_withgetx/screens/auth/user/user_screen.dart';
 import 'package:api_withgetx/theme/app_color.dart';
 import 'package:api_withgetx/theme/app_theme.dart';
@@ -10,16 +12,15 @@ class PostCard extends StatefulWidget {
   final String postbody;
   final int userId;
   final String userName;
-  final int id;
-  final int postId;
+  final int commentsId;
+
   const PostCard({
     super.key,
     required this.name,
     required this.postbody,
     required this.userId,
     required this.userName,
-    required this.id,
-    required this.postId,
+    required this.commentsId,
   });
 
   @override
@@ -29,8 +30,7 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   @override
   void initState() {
-    log(widget.id.toString(), name: 'post Id');
-
+    log(widget.userId.toString(), name: 'user Id');
     super.initState();
   }
 
@@ -43,7 +43,7 @@ class _PostCardState extends State<PostCard> {
         children: [
           ListTile(
             onTap: () {
-              Get.toNamed('/user');
+              // Navigate to UserScreen
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -109,16 +109,29 @@ class _PostCardState extends State<PostCard> {
                     const Icon(Icons.favorite_border),
                     const SizedBox(width: 10),
                     GestureDetector(
-                      onTap: () async {},
+                      onTap: () {
+                        showBottomSheetComment(context, widget.commentsId);
+                      },
                       child: const Icon(Icons.comment),
                     ),
                     const SizedBox(width: 10),
                     const Icon(Icons.share)
                   ],
                 ),
-                const Row(
+                Row(
                   children: [
-                    Icon(Icons.save_alt),
+                    GestureDetector(
+                      onTap: () async {
+                        await Get.find<HomeController>()
+                            .removePost(widget.commentsId.toString())
+                            .then((value) {
+                          Get.find<HomeController>().post.removeWhere(
+                                (post) => post.id == widget.commentsId,
+                              );
+                        });
+                      },
+                      child: const Icon(Icons.delete),
+                    )
                   ],
                 )
               ],
@@ -128,4 +141,78 @@ class _PostCardState extends State<PostCard> {
       ),
     );
   }
+}
+
+void showBottomSheetComment(BuildContext context, int commentsId) {
+  final CommentsController commentsController = Get.find();
+  commentsController.getCommets(commentsId);
+
+  showModalBottomSheet(
+    isScrollControlled: true,
+    context: context,
+    shape: const BeveledRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(20.0),
+        topRight: Radius.circular(20.0),
+      ),
+    ),
+    builder: (BuildContext context) {
+      return Container(
+        height: Get.height * 0.80,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.0),
+            topRight: Radius.circular(20.0),
+          ),
+        ),
+        child: Obx(() {
+          if (commentsController.isLoading.value) {
+            return const Center(child: CircularProgressIndicator());
+          } else {
+            return Column(
+              children: [
+                Text(
+                  'Comments',
+                  textAlign: TextAlign.center,
+                  style: boldBlack.copyWith(fontSize: 25),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 20),
+                    itemCount: commentsController.comments.length,
+                    itemBuilder: (context, index) {
+                      final comment = commentsController.comments[index];
+                      return ListTile(
+                        leading: const Icon(Icons.person),
+                        title: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              comment.name ?? 'No name',
+                              style: boldBlue.copyWith(fontSize: 14),
+                            ),
+                            Text(
+                              comment.email ?? 'No email',
+                              style: boldBlack.copyWith(fontSize: 14),
+                            ),
+                          ],
+                        ),
+                        subtitle: Text(
+                          comment.body ?? 'No comment',
+                          style: normalBlack,
+                        ),
+                        trailing: const Icon(Icons.favorite_border),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
+          }
+        }),
+      );
+    },
+  );
 }

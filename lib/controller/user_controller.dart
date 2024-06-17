@@ -10,9 +10,8 @@ class UserController extends GetxController {
   RxList<UserModel> user = <UserModel>[].obs;
   RxList<UserModel> userDetail = <UserModel>[].obs;
   RxList<PostsModel> post = <PostsModel>[].obs;
-  RxInt id = 0.obs;
 
-  /// get All user
+  /// get All users
   Future<void> getUsers() async {
     try {
       final response = await repo.getUsers();
@@ -23,20 +22,23 @@ class UserController extends GetxController {
 
       log(user.toString(), name: 'users');
     } catch (e, s) {
-      log(e.toString(), name: 'error getPosts', stackTrace: s);
+      log(e.toString(), name: 'error getUsers', stackTrace: s);
     }
   }
 
-  //get particular user
+  // Get particular user
   Future<void> getParticulatUsers(String id) async {
     try {
+      log('Fetching user with id: $id', name: 'getParticulatUsers');
       final response = await repo.getParicularUsers(id);
-      log(response.toString(), name: 'getUsersParticlarid');
-      response.forEach((element) {
-        userDetail.add(UserModel.fromJson(element));
-      });
+      userDetail.clear();
+      log('Response received: ${response.toString()}',
+          name: 'getParticulatUsers');
+      userDetail.add(UserModel.fromJson(
+          response)); // Add the single user object to the list
     } catch (e, s) {
-      log(e.toString(), name: 'error getUsersparticular', stackTrace: s);
+      log('Error occurred: ${e.toString()}',
+          name: 'error getParticulatUsers', stackTrace: s);
     }
   }
 }

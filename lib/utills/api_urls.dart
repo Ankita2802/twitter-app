@@ -3,6 +3,7 @@ class ApiUrls {
   static const post = 'posts';
   static const user = 'users';
   static const comment = 'comments';
-  static const register = 'https://reqres.in/api/register';
-  static const login = 'https://reqres.in/api/login';
+  static const baseUrl1 = 'https://reqres.in/api/';
+  static const register = 'register';
+  static const login = 'login';
 }

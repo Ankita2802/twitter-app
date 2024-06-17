@@ -29,18 +29,6 @@ class AuthRepositry extends ApiService {
   Future login(Map<String, dynamic> body) async {
     final response = await postHttp(data: body, api: ApiUrls.login);
     log(response.body, name: 'response login');
-    log(response.statusCode.toString(), name: 'statusCode');
-    var data = jsonDecode(response.body);
-    var error = data['error'].toString();
-    var token = data['token'].toString();
-    log(error.toString(), name: 'error for login');
-    log(token.toString(), name: 'token for login');
-    if (response.statusCode == 200) {
-      MySharedPreferences.instance.setStringValue("token", token);
-      Get.snackbar("LoginSucessfully", token);
-    } else {
-      Get.snackbar("Login Failed", error);
-    }
     return jsonDecode(response.body);
   }
 }

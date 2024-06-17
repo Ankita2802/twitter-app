@@ -23,14 +23,31 @@ class ApiService {
     required String api,
     // bool token = false,
   }) async {
+    final url = ApiUrls.baseUrl1 + api;
+    log(url, name: 'postHttp');
     final response = await http.post(
-      Uri.parse(api),
+      Uri.parse(url),
       body: json.encode(data),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
     );
     log(response.statusCode.toString());
+
+    return response;
+  }
+
+  Future<http.Response> deleteHttp({
+    required String api,
+    bool token = false,
+  }) async {
+    final url = ApiUrls.baseUrl + api;
+    log(url, name: 'deleteHttp');
+
+    final response = await http.delete(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+    );
 
     return response;
   }

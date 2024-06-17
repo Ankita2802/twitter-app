@@ -1,7 +1,5 @@
 import 'dart:developer';
-
 import 'package:api_withgetx/controller/signup_controller.dart';
-import 'package:api_withgetx/screens/auth/login_screen.dart';
 import 'package:api_withgetx/theme/app_color.dart';
 import 'package:api_withgetx/theme/app_theme.dart';
 import 'package:api_withgetx/utills/app_image.dart';

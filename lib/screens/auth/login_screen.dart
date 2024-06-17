@@ -1,13 +1,10 @@
 import 'dart:developer';
-
 import 'package:api_withgetx/controller/login_controller.dart';
-import 'package:api_withgetx/screens/auth/register_screen.dart';
 import 'package:api_withgetx/screens/home/home_screen.dart';
 import 'package:api_withgetx/theme/app_color.dart';
 import 'package:api_withgetx/theme/app_theme.dart';
 import 'package:api_withgetx/utills/app_image.dart';
 import 'package:api_withgetx/widget/app_button.dart';
-import 'package:api_withgetx/widget/app_checkbox.dart';
 import 'package:api_withgetx/widget/app_textformfield.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
