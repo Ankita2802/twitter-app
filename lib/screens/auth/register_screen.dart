@@ -110,7 +110,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         if (_formKey.currentState!.validate()) {
                           await signupController.signUP().then(
                             (value) {
-                              Navigator.pop(context);
                               if (value) {
                                 Get.toNamed('/home');
                               }
@@ -126,7 +125,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 GestureDetector(
                   onTap: () {
                     Get.offAllNamed(
-                        '/login'); // This will navigate to LoginScreen and remove all previous routes
+                      '/login',
+                    ); // This will navigate to LoginScreen and remove all previous routes
                   },
                   child: Center(
                     child: Text(

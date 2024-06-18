@@ -112,20 +112,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     return AppButton(
                       onTap: () async {
                         if (_formKey.currentState!.validate()) {
-                          await loginController.login().then(
-                            (value) {
-                              if (value) {
-                                // Use GetX for navigation
-                                Get.offAll(
-                                  () => const HomeScreen(),
-                                  predicate: (route) =>
-                                      false, // Remove all previous routes
-                                );
-                              } else {
-                                Get.back(); // This is the equivalent of Navigator.pop(context);
-                              }
-                            },
-                          );
+                          bool success = await loginController.login();
+                          if (success) {
+                            Get.offAll(() => const HomeScreen());
+                          }
                         }
                       },
                       text: "Login",

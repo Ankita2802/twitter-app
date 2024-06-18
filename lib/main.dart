@@ -1,10 +1,13 @@
 import 'package:api_withgetx/routes/app_pages.dart';
 import 'package:api_withgetx/screens/auth/splash_screen.dart';
 import 'package:api_withgetx/widget/controller_binding.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
