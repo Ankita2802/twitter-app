@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'package:api_withgetx/repositry/auth_repo.dart';
 import 'package:api_withgetx/utills/my_sharepref.dart';
-import 'package:api_withgetx/utills/utills.dart';
 import 'package:get/get.dart';
 
 class SignupController extends GetxController {

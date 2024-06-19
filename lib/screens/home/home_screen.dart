@@ -3,7 +3,6 @@ import 'package:api_withgetx/components/post_card.dart';
 import 'package:api_withgetx/controller/home_cotroller.dart';
 import 'package:api_withgetx/controller/user_controller.dart';
 import 'package:api_withgetx/utills/app_image.dart';
-import 'package:api_withgetx/utills/my_sharepref.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -20,6 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Map<int, String> userNames = {};
   Map<int, String> profileUserName = {};
   String fullName = '';
+
   @override
   void initState() {
     homeController.getPost();
@@ -67,18 +67,8 @@ class _HomeScreenState extends State<HomeScreen> {
           color: Colors.black,
           size: 30,
         ),
-        actions: [
-          GestureDetector(
-            onTap: () {
-              _showLogoutDialog();
-            },
-            child: const Icon(
-              Icons.logout,
-              color: Colors.black,
-              size: 30,
-            ),
-          ),
-          const Padding(
+        actions: const [
+          Padding(
             padding: EdgeInsets.all(8.0),
             child: Icon(
               Icons.notifications_outlined,
@@ -104,73 +94,25 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemCount: homeController.post.length,
                   itemBuilder: (context, index) {
                     var post = homeController.post[index];
-
                     var userId = post.userId;
                     log(userId.toString(), name: 'userId');
                     log(userNames[userId].toString());
-                    var userName = userNames[userId] ?? 'No name';
+                    var userName = userNames[userId];
                     log(userName.toString(), name: 'user name');
                     var profileUsername = profileUserName[userId];
                     return PostCard(
                       name: profileUsername ?? 'no profile user name',
-                      postbody: post.body ?? ' no body',
+                      postbody: post.body ?? 'no body',
                       userId: post.userId ?? 0,
-                      userName: userName,
+                      userName: userName ?? 'no name',
                       commentsId: post.id ?? 0,
                     );
                   },
                 ),
               )
-            : const Center(
-                child: Text("No post avilable"),
-              );
+            : const Center(child: CircularProgressIndicator());
       }),
     );
   }
 }
 
-void _showLogoutDialog() {
-  Get.dialog(
-    Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
-      ),
-      child: Container(
-        height: Get.height * 0.250,
-        width: Get.width * 0.250,
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Confirm Logout',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            const Text('Are you sure you want to log out?'),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Get.back(); // Close the dialog
-                  },
-                  child: const Text('Cancel'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    MySharedPreferences.instance.removeAll();
-                    Get.back();
-                    Get.offAllNamed('/login'); // Navigate to the login screen
-                  },
-                  child: const Text('Logout'),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    ),
-  );
-}

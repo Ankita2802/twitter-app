@@ -1,6 +1,6 @@
 import 'package:api_withgetx/routes/app_routes.dart';
-import 'package:api_withgetx/screens/auth/login_screen.dart';
-import 'package:api_withgetx/screens/auth/register_screen.dart';
+import 'package:api_withgetx/screens/auth/login/login_screen.dart';
+import 'package:api_withgetx/screens/auth/register/register_screen.dart';
 import 'package:api_withgetx/screens/auth/user/user_screen.dart';
 import 'package:api_withgetx/screens/home/home_screen.dart';
 import 'package:get/get.dart';

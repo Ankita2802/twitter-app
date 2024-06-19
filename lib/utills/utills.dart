@@ -91,4 +91,10 @@ class Utils {
     }
     return false;
   }
+
+  static bool isPasswordValid(String password) {
+    String p = r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$';
+    RegExp regExp = RegExp(p);
+    return regExp.hasMatch(password);
+  }
 }

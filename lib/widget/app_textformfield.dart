@@ -37,7 +37,7 @@ class AppTextFormField extends StatefulWidget {
   final TextInputType? textInputType;
   final TextInputAction? textInputAction;
   final bool obscureText;
-  final String? validate;
+
   final Widget? suffixIcon;
   final String? hintText;
   final TextStyle? labelStyle;
@@ -52,6 +52,7 @@ class AppTextFormField extends StatefulWidget {
   final int? maxDigit;
   final bool enabled;
   final bool readOnly;
+  final String? Function(String?)? validate;
 
   final List<TextInputFormatter>? inputFormatters;
   final Widget? suffix;
@@ -96,12 +97,7 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
                     FilteringTextInputFormatter.digitsOnly,
                     LengthLimitingTextInputFormatter(10),
                   ],
-        validator: (value) {
-          if (value!.isEmpty) {
-            return widget.errorText;
-          }
-          return widget.validate;
-        },
+        validator: widget.validate,
         decoration: InputDecoration(
           hintStyle: normalBlack.copyWith(fontSize: 14),
           prefixIcon: widget.prefix,

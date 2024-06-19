@@ -1,9 +1,10 @@
 import 'dart:developer';
-import 'package:api_withgetx/controller/login_controller.dart';
+import 'package:api_withgetx/screens/auth/login/signin_controller.dart';
 import 'package:api_withgetx/screens/home/home_screen.dart';
 import 'package:api_withgetx/theme/app_color.dart';
 import 'package:api_withgetx/theme/app_theme.dart';
 import 'package:api_withgetx/utills/app_image.dart';
+import 'package:api_withgetx/utills/utills.dart';
 import 'package:api_withgetx/widget/app_button.dart';
 import 'package:api_withgetx/widget/app_textformfield.dart';
 import 'package:flutter/gestures.dart';
@@ -22,11 +23,11 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   String? emailError;
-  bool hide = false;
+  bool hide = true;
   bool agreed = false;
   String? passwordError;
 
-  LoginController loginController = Get.put(LoginController());
+  SignInController signInController = Get.put(SignInController());
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -54,14 +55,21 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 50),
                 AppTextFormField(
-                  validate: emailError,
+                  validate: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email';
+                    } else if (!Utils.isEmail(value)) {
+                      return 'Please enter a valid email';
+                    }
+                    return null;
+                  },
                   controller: emailController,
                   hintText: "email",
                   errorText: '*Please enter email ',
                   textInputType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
                   onChange: (value) {
-                    loginController.setEmail = value;
+                    signInController.setEmail = value;
                     if (emailError != null) {
                       setState(() {
                         emailError = null;
@@ -79,6 +87,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   textInputType: TextInputType.text,
                   obscureText: hide,
                   textInputAction: TextInputAction.done,
+                  validate: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your password';
+                    } else if (!Utils.isPasswordValid(value)) {
+                      return 'Password should contain at least one uppercase letter';
+                    } else if (value.length < 8) {
+                      return 'Password should contain at least 8 characters';
+                    }
+                    return null;
+                  },
                   suffixIcon: IconButton(
                     icon: hide
                         ? const Icon(
@@ -96,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                   ),
                   onChange: (value) {
-                    loginController.setPassword = value;
+                    signInController.setPassword = value;
                     if (passwordError != null) {
                       setState(() {
                         passwordError = null;
@@ -106,13 +124,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: height * 0.100),
                 Obx(() {
-                  if (loginController.isLoading.value) {
+                  if (signInController.isLoading.value) {
                     return const CircularProgressIndicator();
                   } else {
                     return AppButton(
                       onTap: () async {
                         if (_formKey.currentState!.validate()) {
-                          bool success = await loginController.login();
+                          bool success = await signInController.signIn(context);
                           if (success) {
                             Get.offAll(() => const HomeScreen());
                           }
@@ -122,13 +140,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     );
                   }
                 }),
-                Obx(() {
-                  if (loginController.token.isNotEmpty) {
-                    return Text('Token: ${loginController.token}');
-                  } else {
-                    return Container();
-                  }
-                }),
+                // Obx(() {
+                //   if (signInController.token.isNotEmpty) {
+                //     return Text('Token: ${loginController.token}');
+                //   } else {
+                //     return Container();
+                //   }
+                // }),
                 const SizedBox(height: 20),
                 RichText(
                   text: TextSpan(
