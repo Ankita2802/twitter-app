@@ -19,7 +19,7 @@ class AppTextFormField extends StatefulWidget {
     this.onChange,
     this.contentPadding,
     this.prefix,
-    this.cursorHeight = 14,
+    // this.cursorHeight = 14,
     this.minLines = 1,
     this.maxLines = 1,
     final bool? suffixArrow,
@@ -45,7 +45,7 @@ class AppTextFormField extends StatefulWidget {
   final EdgeInsetsGeometry? contentPadding;
   final String? labelText;
   final Widget? prefix;
-  final double cursorHeight;
+  // final double cursorHeight;
   final int minLines;
   final int? maxLines;
   final String? initialValue;
@@ -79,8 +79,8 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
         maxLines: widget.maxLines,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         controller: widget.controller,
-        cursorHeight: widget.cursorHeight,
         cursorWidth: 1,
+        cursorHeight: 18,
         obscureText: widget.obscureText,
         textInputAction: widget.textInputAction ?? TextInputAction.next,
         keyboardType: widget.textInputType,
@@ -99,9 +99,12 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
                   ],
         validator: widget.validate,
         decoration: InputDecoration(
-          hintStyle: normalBlack.copyWith(fontSize: 14),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 11,
+          ),
+          hintStyle: normalBlack,
           prefixIcon: widget.prefix,
-          contentPadding: widget.contentPadding ?? const EdgeInsets.all(10),
           hintText: widget.hintText,
           fillColor: AppColors.appBlue.withOpacity(0.1),
           enabledBorder: UnderlineInputBorder(

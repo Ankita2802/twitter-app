@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'package:api_withgetx/auth_service/auth_service.dart';
 import 'package:api_withgetx/controller/comment_controller.dart';
 import 'package:api_withgetx/controller/home_cotroller.dart';
 import 'package:api_withgetx/screens/auth/user/user_screen.dart';
@@ -59,14 +58,14 @@ class _PostCardState extends State<PostCard> {
                       shape: BoxShape.circle,
                       border: Border.all(
                         color: AppColors.appBlue.withOpacity(0.2),
-                        width: 2,
+                        width: 3,
                       ),
                     ),
                     child: CircleAvatar(
                       backgroundColor: Colors.white,
                       child: Text(
                         widget.userName,
-                        style: boldBlack.copyWith(fontSize: 10),
+                        style: boldBlack,
                       ),
                     ),
                   ),
@@ -74,25 +73,25 @@ class _PostCardState extends State<PostCard> {
               widget.name,
               style: boldBlack,
             ),
-            subtitle: Text(
-              '29/01/2024',
-              style: boldBlack.copyWith(
-                fontSize: 10,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
+            subtitle: Text('jan 21,2024',
+                style: boldBlack.copyWith(
+                    fontWeight: FontWeight.w400, fontSize: 18)),
             trailing: PopupMenuButton(
               itemBuilder: (ctx) => [
                 buildPopupMenuItem(
-                    'Profile', Icons.person, context, widget.userId),
-                buildPopupMenuItem(
-                    'Logout', Icons.exit_to_app, context, widget.userId),
+                  'view Profile',
+                  Icons.person,
+                  context,
+                  widget.userId,
+                  widget.name,
+                ),
               ],
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 10.0),
+            padding: const EdgeInsets.all(20.0),
             child: Text(
+              textAlign: TextAlign.start,
               widget.postbody,
               style: boldBlack.copyWith(
                 fontSize: 14,
@@ -103,6 +102,7 @@ class _PostCardState extends State<PostCard> {
           Padding(
             padding: const EdgeInsets.symmetric(
               vertical: 20,
+              horizontal: 10,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -249,24 +249,21 @@ void showBottomSheetComment(BuildContext context, int commentsId) {
   );
 }
 
-PopupMenuItem buildPopupMenuItem(
-    String title, IconData iconData, BuildContext context, int id) {
+PopupMenuItem buildPopupMenuItem(String title, IconData iconData,
+    BuildContext context, int id, String name) {
   return PopupMenuItem(
     child: GestureDetector(
       onTap: () {
         Get.back();
-        if (title == "Profile") {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => UserScreen(
-                id: id,
-              ),
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => UserScreen(
+              id: id,
             ),
-          );
-        } else if (title == "Logout") {
-          showLogoutDialog();
-        }
+          ),
+        );
       },
       child: Row(
         children: [
@@ -275,56 +272,8 @@ PopupMenuItem buildPopupMenuItem(
             color: Colors.black,
           ),
           const SizedBox(width: 5),
-          Text(title),
+          Text('View $name'),
         ],
-      ),
-    ),
-  );
-}
-
-final authServices = Authservices();
-
-void showLogoutDialog() {
-  Get.dialog(
-    Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
-      ),
-      child: Container(
-        height: Get.height * 0.250,
-        width: Get.width * 0.250,
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Confirm Logout',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            const Text('Are you sure you want to log out?'),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Get.back(); // Close the dialog
-                  },
-                  child: const Text('Cancel'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    authServices.signOut();
-                    Get.back();
-                    Get.offAllNamed('/login'); // Navigate to the login screen
-                  },
-                  child: const Text('Logout'),
-                ),
-              ],
-            ),
-          ],
-        ),
       ),
     ),
   );

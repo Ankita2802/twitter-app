@@ -91,16 +91,36 @@ class Authservices {
 
   Future<bool> signIn(String email, String password) async {
     try {
-      auth.signInWithEmailAndPassword(email: email, password: password);
+      // Query Firestore to find the user document
+      QuerySnapshot querySnapshot = await store
+          .collection('signUp')
+          .where(
+            'email',
+            isEqualTo: email,
+          )
+          .get();
+
+      if (querySnapshot.docs.isEmpty) {
+        Utils.toastMessage('No user found for that email.');
+        return false;
+      }
+
+      // Assuming emails are unique, we take the first document
+      var userDoc = querySnapshot.docs.first;
+      var userData = userDoc.data() as Map<String, dynamic>;
+
+      // Check if the provided password matches the stored password
+      if (userData['password'] != password) {
+        Utils.toastMessage('Wrong password provided for that user.');
+        return false;
+      }
+
+      // Optionally, sign in using FirebaseAuth to keep the user session
+      await auth.signInWithEmailAndPassword(email: email, password: password);
+
       return true; // Sign-in successful
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        Utils.toastMessage('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        Utils.toastMessage('Wrong password provided for that user.');
-      } else {
-        Utils.toastMessage('Sign in failed: ${e.message}');
-      }
+      Utils.toastMessage('Sign in failed: ${e.message}');
       return false; // Sign-in failed
     } catch (e) {
       Utils.toastMessage('Sign in failed: $e');

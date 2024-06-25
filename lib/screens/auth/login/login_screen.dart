@@ -58,8 +58,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   validate: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your email';
-                    } else if (!Utils.isEmail(value)) {
-                      return 'Please enter a valid email';
                     }
                     return null;
                   },
@@ -90,21 +88,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   validate: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your password';
-                    } else if (!Utils.isPasswordValid(value)) {
-                      return 'Password should contain at least one uppercase letter';
-                    } else if (value.length < 8) {
-                      return 'Password should contain at least 8 characters';
                     }
                     return null;
                   },
                   suffixIcon: IconButton(
                     icon: hide
                         ? const Icon(
-                            Icons.visibility_off,
+                            Icons.visibility,
                             color: AppColors.appBlue,
                           )
                         : const Icon(
-                            Icons.visibility,
+                            Icons.visibility_off,
                             color: AppColors.appBlue,
                           ),
                     onPressed: () {
@@ -132,7 +126,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         if (_formKey.currentState!.validate()) {
                           bool success = await signInController.signIn(context);
                           if (success) {
+                            Utils.toastMessage("Login Sucessfully");
                             Get.offAll(() => const HomeScreen());
+                          } else {
+                            Utils.toastMessage("Login Failed");
                           }
                         }
                       },

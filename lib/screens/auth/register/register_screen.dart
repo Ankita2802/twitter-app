@@ -6,6 +6,7 @@ import 'package:api_withgetx/utills/app_image.dart';
 import 'package:api_withgetx/utills/utills.dart';
 import 'package:api_withgetx/widget/app_button.dart';
 import 'package:api_withgetx/widget/app_textformfield.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -51,17 +52,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(height: height * 0.100),
+                Image.asset(
+                  AppLogos.twitterLogo,
+                  cacheHeight: 40,
+                  cacheWidth: 40,
+                ),
+                const SizedBox(height: 20),
                 Text(
                   'Join Twitter Today',
                   style: normalBlack.copyWith(
                     fontSize: 30,
                   ),
-                ),
-                const SizedBox(height: 20),
-                Image.asset(
-                  AppLogos.twitterLogo,
-                  cacheHeight: 40,
-                  cacheWidth: 40,
                 ),
                 const SizedBox(height: 50),
                 AppTextFormField(
@@ -190,11 +191,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   suffixIcon: IconButton(
                     icon: hidePassword
                         ? const Icon(
-                            Icons.visibility_off,
+                            Icons.visibility,
                             color: AppColors.appBlue,
                           )
                         : const Icon(
-                            Icons.visibility,
+                            Icons.visibility_off,
                             color: AppColors.appBlue,
                           ),
                     onPressed: () {
@@ -233,11 +234,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   suffixIcon: IconButton(
                     icon: hideConfirmPassword
                         ? const Icon(
-                            Icons.visibility_off,
+                            Icons.visibility,
                             color: AppColors.appBlue,
                           )
                         : const Icon(
-                            Icons.visibility,
+                            Icons.visibility_off,
                             color: AppColors.appBlue,
                           ),
                     onPressed: () {
@@ -273,25 +274,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           }
                         }
                       },
-                      text: "SignUP",
+                      text: "Register",
                     );
                   }
                 }),
                 const SizedBox(height: 20),
-                GestureDetector(
-                  onTap: () {
-                    Get.offAllNamed(
-                      '/login',
-                    ); // This will navigate to LoginScreen and remove all previous routes
-                  },
-                  child: Center(
-                    child: Text(
-                      "Already have an account? Log In Here!",
-                      style: normalBlack.copyWith(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w500,
+                RichText(
+                  text: TextSpan(
+                    children: <TextSpan>[
+                      TextSpan(
+                          text: 'Already have an account?', style: normalBlack),
+                      TextSpan(
+                        text: ' Log In Here!',
+                        style: boldBlue.copyWith(fontSize: 15),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Get.toNamed('/login');
+                          },
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ],

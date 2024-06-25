@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:api_withgetx/auth_service/auth_service.dart';
 import 'package:api_withgetx/components/post_card.dart';
 import 'package:api_withgetx/controller/home_cotroller.dart';
 import 'package:api_withgetx/controller/user_controller.dart';
@@ -47,6 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
           log('User ID: ${user.id}, Name: ${user.name}', name: 'User Data');
         }
       }
+      setState(() {});
     });
   }
 
@@ -67,8 +69,15 @@ class _HomeScreenState extends State<HomeScreen> {
           color: Colors.black,
           size: 30,
         ),
-        actions: const [
-          Padding(
+        actions: [
+          GestureDetector(
+              onTap: showLogoutDialog,
+              child: const Icon(
+                Icons.logout,
+                color: Colors.black,
+                size: 30,
+              )),
+          const Padding(
             padding: EdgeInsets.all(8.0),
             child: Icon(
               Icons.notifications_outlined,
@@ -83,14 +92,14 @@ class _HomeScreenState extends State<HomeScreen> {
             ? Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                child: ListView.separated(
-                  separatorBuilder: (context, index) {
-                    return const Divider(
-                      height: 1,
-                      thickness: 0,
-                      color: Colors.grey,
-                    );
-                  },
+                child: ListView.builder(
+                  // separatorBuilder: (context, index) {
+                  //   return const Divider(
+                  //     height: 1,
+                  //     thickness: 0,
+                  //     color: Colors.grey,
+                  //   );
+                  // },
                   itemCount: homeController.post.length,
                   itemBuilder: (context, index) {
                     var post = homeController.post[index];
@@ -100,12 +109,29 @@ class _HomeScreenState extends State<HomeScreen> {
                     var userName = userNames[userId];
                     log(userName.toString(), name: 'user name');
                     var profileUsername = profileUserName[userId];
-                    return PostCard(
-                      name: profileUsername ?? 'no profile user name',
-                      postbody: post.body ?? 'no body',
-                      userId: post.userId ?? 0,
-                      userName: userName ?? 'no name',
-                      commentsId: post.id ?? 0,
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 10,
+                              offset: Offset(2, 5),
+                              blurStyle: BlurStyle.normal,
+                            ),
+                          ],
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        ),
+                        child: PostCard(
+                          name: profileUsername ?? 'no profile user name',
+                          postbody: post.body ?? 'no body',
+                          userId: post.userId ?? 0,
+                          userName: userName ?? 'no name',
+                          commentsId: post.id ?? 0,
+                        ),
+                      ),
                     );
                   },
                 ),
@@ -116,3 +142,49 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+Authservices authservices = Authservices();
+void showLogoutDialog() {
+  Get.dialog(
+    Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      child: Container(
+        height: Get.height * 0.250,
+        width: Get.width * 0.250,
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'Confirm Logout',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            const Text('Are you sure you want to log out?'),
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Get.back(); // Close the dialog
+                  },
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    authservices.signOut();
+                    Get.back();
+                    Get.offAllNamed('/login'); // Navigate to the login screen
+                  },
+                  child: const Text('Logout'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
